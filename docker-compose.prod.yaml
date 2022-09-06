@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  customer:
+    container_name: customer-api
+    image: customer
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: customer
+    restart: always
+    environment:
+      - APP_PORT=3001
+      - KAFKA_ID=customer-api
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
+    ports:
+      - '3001:3001'
+    command: bash -c "npx tsx watch customer/server.ts"
+    depends_on:
+      - kafka
+    networks:
+      - app-net
+
+  gateway:
+    container_name: gateway-api
+    image: gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gateway
+    restart: always
+    environment:
+      - APP_PORT=3000
+      - HOST_URL=${HOST_URL}
+      - CUSTOMER_URL=http://localhost:3001
+    ports:
+      - '3000:3000'
+    command: bash -c "npx tsx watch gateway/server.ts"
+    depends_on:
+      - customer
+    networks:
+      - app-net
