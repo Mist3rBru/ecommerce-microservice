@@ -14,14 +14,18 @@ class Database {
 
   async find (): Promise<User[]> {
     const db = await fs.readFile(this.dbPath)
-    const data = JSON.parse(db.toString())
-    return data
+    return JSON.parse(db.toString())
+  }
+
+  async findById (userId: string): Promise<User> {
+    const users = await this.find()
+    return users.find(user => user.id === userId)
   }
 
   async register (user: User): Promise<User> {
-    const data = await this.find()
+    const users = await this.find()
     user.id = uuid()
-    await fs.writeFile(this.dbPath, JSON.stringify([...data, user]))
+    await fs.writeFile(this.dbPath, JSON.stringify([...users, user]))
     return user
   }
 }
@@ -31,6 +35,11 @@ export default (router: Router): void  => {
   
   router.post('/user', async (req, res) => {
     const user = await db.register(req.body)
+    return res.status(200).json(user)
+  })
+
+  router.get('/user/:userId', async (req, res) => {
+    const user = await db.findById(req.params.userId)
     return res.status(200).json(user)
   })
 

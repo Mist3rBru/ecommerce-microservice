@@ -17,6 +17,15 @@ export default (router: Router) => {
     res.status(status).json(body)
   })
 
+  router.get('/user/:userId', async (req, res) => {
+    const url = api.build({
+      baseUrl: process.env.CUSTOMER_URL,
+      uri: ['user', req.params.userId],
+    })
+    const { status, body } = await api.get(url)
+    res.status(status).json(body)
+  })
+
   router.get('/users', async (req, res) => {
     const url = api.build({
       baseUrl: process.env.CUSTOMER_URL,
