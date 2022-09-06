@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  kafka:
+    environment:
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+
   customer:
     container_name: customer-api
     image: customer
@@ -12,7 +16,7 @@ services:
     environment:
       - APP_PORT=3001
       - KAFKA_ID=customer-api
-      - KAFKA_BROKER=${KAFKA_BROKER}
+      - KAFKA_BROKER=kafka:9092
       - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
       - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
     ports:
@@ -34,7 +38,7 @@ services:
     environment:
       - APP_PORT=3000
       - HOST_URL=${HOST_URL}
-      - CUSTOMER_URL=http://localhost:3001
+      - CUSTOMER_URL=http://customer:3001
     ports:
       - '3000:3000'
     command: bash -c "npx tsx watch gateway/server.ts"

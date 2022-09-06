@@ -2,6 +2,10 @@
   "version": "1.0.0",
   "name": "microservices",
   "description": "",
+  "scripts": {
+    "docker": "docker-compose up",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yaml up"
+  },
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.2",
