@@ -5,6 +5,28 @@ services:
     environment:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
 
+  product:
+    container_name: product-api
+    image: product
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: product
+    restart: always
+    environment:
+      - APP_PORT=3002
+      - KAFKA_ID=product-api
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
+    ports:
+      - '3002:3002'
+    command: bash -c "npx tsx watch product/server.ts"
+    depends_on:
+      - kafka
+    networks:
+      - app-net
+
   customer:
     container_name: customer-api
     image: customer
@@ -37,12 +59,14 @@ services:
     restart: always
     environment:
       - APP_PORT=3000
-      - HOST_URL=${HOST_URL}
+      - GATEWAY_URL=${GATEWAY_URL}
       - CUSTOMER_URL=http://customer:3001
+      - PRODUCT_URL=http://product:3002
     ports:
       - '3000:3000'
     command: bash -c "npx tsx watch gateway/server.ts"
     depends_on:
       - customer
+      - product
     networks:
       - app-net

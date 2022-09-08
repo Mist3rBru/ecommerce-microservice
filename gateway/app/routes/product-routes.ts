@@ -1,13 +1,13 @@
 import { Router } from 'express'
-import { AxiosAdapter } from '../adapters'
+import { AxiosAdapter } from '../../adapters'
 
 export default (router: Router) => {
   const api = new AxiosAdapter()
 
-  router.post('/user', async (req, res) => {
+  router.post('/product', async (req, res) => {
     const url = api.build({
-      baseUrl: process.env.CUSTOMER_URL,
-      uri: ['user'],
+      baseUrl: process.env.PRODUCT_URL,
+      uri: ['product'],
     })
     const { status, body } = await api.request({
       method: 'post',
@@ -17,19 +17,19 @@ export default (router: Router) => {
     res.status(status).json(body)
   })
 
-  router.get('/user/:userId', async (req, res) => {
+  router.get('/product/:productId', async (req, res) => {
     const url = api.build({
-      baseUrl: process.env.CUSTOMER_URL,
-      uri: ['user', req.params.userId],
+      baseUrl: process.env.PRODUCT_URL,
+      uri: ['product', req.params.productId],
     })
     const { status, body } = await api.get(url)
     res.status(status).json(body)
   })
 
-  router.get('/users', async (req, res) => {
+  router.get('/products', async (req, res) => {
     const url = api.build({
-      baseUrl: process.env.CUSTOMER_URL,
-      uri: ['users'],
+      baseUrl: process.env.PRODUCT_URL,
+      uri: ['products'],
     })
     const { status, body } = await api.get(url)
     res.status(status).json(body)

@@ -1,9 +1,7 @@
 import 'dotenv/config'
-import { setupApp } from './config/app'
+import { App } from './app'
 
-const app = setupApp()
+const app = new App()
 const port = process.env.APP_PORT || '3000'
 
-app.listen(port, () => {
-  process.stdout.write(`Server running on port ${port}\n`)
-})
+app.listen(port)

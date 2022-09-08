@@ -3,8 +3,9 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production'
 
-      HOST_URL: string
+      GATEWAY_URL: string
       CUSTOMER_URL: string
+      PRODUCT_URL: string
 
       KAFKA_ID: string
       KAFKA_BROKER: string
