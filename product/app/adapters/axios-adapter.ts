@@ -18,6 +18,7 @@ export class AxiosAdapter {
     headers: {
       'cache-control': 'no-cache',
     },
+    validateStatus: () => true
   })
 
   build({ baseUrl, params, uri }: BuildParams): string {
