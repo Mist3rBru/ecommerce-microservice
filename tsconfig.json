@@ -4,6 +4,11 @@
     "module": "commonjs",
     "target": "ES2022",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"],
+      "@/tests/*": ["__tests__/*"]
+    }
   }
 }
