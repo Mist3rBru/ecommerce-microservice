@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { faker } from '@faker-js/faker'
-import { User } from '@/gateway/app/models/user'
-import { Database } from '@/customer/app/routes'
+import { Product } from '@/gateway/app/models/product'
+import { Database } from '@/product/app/routes'
 import { writeFile } from 'fs/promises'
 
 const db = new Database()
@@ -18,44 +18,44 @@ describe('customer-routes', () => {
     await writeFile(db.dbPath, '[]')
   })
 
-  describe('POST /user', () => {
+  describe('POST /product', () => {
     it('should return 200 on success', async () => {
-      const user = {
+      const product = {
         name: faker.name.fullName(),
-        email: faker.internet.email(),
+        price: faker.commerce.price(),
       }
-      const { status, data } = await api.post<User>('/user', user)
+      const { status, data } = await api.post<Product>('/product', product)
       expect(status).toBe(200)
       expect(data.id).toBeTruthy()
-      expect(data.name).toBe(user.name)
-      expect(data.email).toBe(user.email)
+      expect(data.name).toBe(product.name)
+      expect(data.price).toBe(product.price)
     })
   })
 
-  describe('GET /users', () => {
+  describe('GET /products', () => {
     it('should return 200 on success', async () => {
-      const { status, data } = await api.get<User[]>('/users')
+      const { status, data } = await api.get<Product[]>('/products')
       expect(status).toBe(200)
       expect(data.length).toBe(1)
       expect(data[0].id).toBeTruthy()
       expect(data[0].name).toBeTruthy()
-      expect(data[0].email).toBeTruthy()
+      expect(data[0].price).toBeTruthy()
     })
   })
 
-  describe('GET /user/:userId', () => {
+  describe('GET /product/:productId', () => {
     it('should return 200 on success', async () => {
       const mock = {
         name: faker.name.fullName(),
-        email: faker.internet.email(),
+        price: faker.commerce.price(),
       }
       const {
-        data: { id: userId },
-      } = await api.post<User>('/user', mock)
-      const { data: user } = await api.get<User>(`/user/${userId}`)
-      expect(user.id).toBe(userId)
-      expect(user.name).toBe(mock.name)
-      expect(user.email).toBe(mock.email)
+        data: { id: productId },
+      } = await api.post<Product>('/product', mock)
+      const { data: product } = await api.get<Product>(`/product/${productId}`)
+      expect(product.id).toBe(productId)
+      expect(product.name).toBe(mock.name)
+      expect(product.price).toBe(mock.price)
     })
   })
 })
