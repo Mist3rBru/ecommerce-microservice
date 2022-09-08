@@ -5,6 +5,28 @@ services:
     environment:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
 
+  order:
+    container_name: order-api
+    image: order
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: order
+    restart: always
+    environment:
+      - APP_PORT=3003
+      - KAFKA_ID=order-api
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
+    ports:
+      - '3003:3003'
+    command: bash -c "npx tsx order/server.ts"
+    depends_on:
+      - kafka
+    networks:
+      - app-net
+
   product:
     container_name: product-api
     image: product
@@ -15,6 +37,10 @@ services:
     restart: always
     environment:
       - APP_PORT=3002
+      - KAFKA_ID=product-api
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
     ports:
       - '3002:3002'
     command: bash -c "npx tsx product/server.ts"
@@ -33,6 +59,10 @@ services:
     restart: always
     environment:
       - APP_PORT=3001
+      - KAFKA_ID=customer-api
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
     ports:
       - '3001:3001'
     command: bash -c "npx tsx customer/server.ts"
@@ -54,11 +84,13 @@ services:
       - GATEWAY_URL=${GATEWAY_URL}
       - CUSTOMER_URL=http://customer:3001
       - PRODUCT_URL=http://product:3002
+      - ORDER_URL=http://order:3003
     ports:
       - '3000:3000'
     command: bash -c "npx tsx gateway/server.ts"
     depends_on:
       - customer
       - product
+      - order
     networks:
       - app-net
