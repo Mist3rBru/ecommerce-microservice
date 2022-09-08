@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { HttpResponse } from '../app/protocols'
+import { HttpResponse } from '../protocols'
 
 interface BuildParams {
   baseUrl: string
