@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { AxiosAdapter } from '../../adapters'
+import { AxiosAdapter } from '../adapters'
 
 export default (router: Router) => {
   const api = new AxiosAdapter()
