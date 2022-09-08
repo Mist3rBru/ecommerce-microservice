@@ -1,7 +1,22 @@
 import 'dotenv/config'
 import { App } from './app'
 
-const app = new App()
-const port = process.env.APP_PORT || '3001'
+;import { KafkaAdapter, ProducerAdapter } from './kafka';
+(async () => {
+  const kafka = new KafkaAdapter({
+    clientId: process.env.KAFKA_ID || 'customer-api',
+    brokers: [process.env.KAFKA_BROKER],
+    retry: {
+      initialRetryTime: parseInt(process.env.KAFKA_RETRY_TIME),
+      retries: parseInt(process.env.KAFKA_RETRY_TIMES),
+    },
+  })
 
-app.listen(port)
+  const producer = new ProducerAdapter(kafka.producer)
+
+  const app = new App(producer)
+  const port = process.env.APP_PORT || '3001'
+  
+  app.listen(port)
+
+})()
