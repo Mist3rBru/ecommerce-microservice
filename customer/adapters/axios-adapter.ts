@@ -20,12 +20,12 @@ export class AxiosAdapter {
     },
   })
 
-  build(data: BuildParams): string {
+  build({ baseUrl, params, uri }: BuildParams): string {
     return [
-      data.baseUrl,
-      /\/$/i.test(data.baseUrl) ? '' : '/',
-      data.uri.join('/'),
-      Object.entries(data.params).flatMap(([key, value], index) => {
+      baseUrl,
+      !/\/$/i.test(baseUrl) && uri?.length ? '/' : '',
+      uri?.join('/'),
+      Object.entries(params || {}).flatMap(([key, value], index) => {
         const mark = index === 0 ? '?' : '&'
         return [mark, key, '=', value.join(',')]
       }),
@@ -46,7 +46,7 @@ export class AxiosAdapter {
     const response = await this.api[params.method](params.url, params.body)
     return {
       status: response.status,
-      body: response.data
+      body: response.data,
     }
   }
 }
