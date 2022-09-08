@@ -1,13 +1,16 @@
 import express, { Express, Router } from 'express'
 import { readdirSync } from 'fs'
 import { resolve } from 'path'
+import { IProducer } from '../kafka/protocols'
 
 export class App {
   private readonly app: Express
   private readonly router: Router
-  constructor() {
+  private readonly producer: IProducer
+  constructor(producer: IProducer) {
     this.app = express()
     this.router = express.Router()
+    this.producer = producer
     this.setupMiddlewares()
     this.setupRoutes()
   }
@@ -20,7 +23,7 @@ export class App {
 
   private setupRoutes(): void {
     readdirSync(resolve(__dirname, './routes')).map(async file => {
-      ;(await import(`./routes/${file}`)).default(this.router)
+      ;(await import(`./routes/${file}`)).default(this.router, this.producer)
     })
   }
 
