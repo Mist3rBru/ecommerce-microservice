@@ -15,7 +15,7 @@ import { App } from './app'
   const producer = new ProducerAdapter(kafka.producer)
 
   const app = new App(producer)
-  const port = process.env.APP_PORT || '3001'
+  const port = process.env.APP_PORT || '3002'
   
   app.listen(port)
 

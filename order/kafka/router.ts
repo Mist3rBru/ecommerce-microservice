@@ -3,9 +3,9 @@ import { join } from 'path'
 import { User, Product } from '../models'
 import { IRouter, ITopicHandler } from './protocols'
 
-class Database {
-  private userDatabase = join(__dirname, '../users.json')
-  private productDatabase = join(__dirname, '../products.json')
+export class Database {
+  userDatabase = join(__dirname, '../users.json')
+  productDatabase = join(__dirname, '../products.json')
 
   async findUsers(): Promise<User[]> {
     const db = await readFile(this.userDatabase)
@@ -17,12 +17,12 @@ class Database {
     return JSON.parse(db.toString())
   }
 
-  async findUserById (userId: string): Promise<User> {
+  async findUserById(userId: string): Promise<User> {
     const users = await this.findUsers()
     return users.find(user => user.id === userId)
   }
 
-  async findProductById (productId: string): Promise<Product> {
+  async findProductById(productId: string): Promise<Product> {
     const products = await this.findUsers()
     return products.find(product => product.id === productId)
   }
@@ -35,7 +35,10 @@ class Database {
 
   async registerProduct(product: Product): Promise<Product> {
     const products = await this.findProducts()
-    await writeFile(this.productDatabase, JSON.stringify([...products, product]))
+    await writeFile(
+      this.productDatabase,
+      JSON.stringify([...products, product])
+    )
     return product
   }
 }

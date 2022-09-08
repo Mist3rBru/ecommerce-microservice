@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
+import { Router } from 'express'
+import { readFile, writeFile } from 'fs/promises'
+import { join } from 'path'
 import { v4 as uuid } from 'uuid'
-import { IProducer } from "../../kafka/protocols";
+import { IProducer } from '../../kafka/protocols'
 
 interface Product {
   id: string
@@ -10,20 +10,20 @@ interface Product {
   price: string
 }
 
-class Database {
-  private dbPath = join(__dirname, '../../db.json')
+export class Database {
+  dbPath = join(__dirname, '../../db.json')
 
-  async find (): Promise<Product[]> {
+  async find(): Promise<Product[]> {
     const db = await readFile(this.dbPath)
     return JSON.parse(db.toString())
   }
 
-  async findById (productId: string): Promise<Product> {
+  async findById(productId: string): Promise<Product> {
     const products = await this.find()
     return products.find(product => product.id === productId)
   }
 
-  async register (product: Product): Promise<Product> {
+  async register(product: Product): Promise<Product> {
     const products = await this.find()
     product.id = uuid()
     await writeFile(this.dbPath, JSON.stringify([...products, product]))
@@ -31,14 +31,14 @@ class Database {
   }
 }
 
-export default (router: Router, producer: IProducer): void  => {
+export default (router: Router, producer: IProducer): void => {
   const db = new Database()
-  
+
   router.post('/product', async (req, res) => {
     const product = await db.register(req.body)
     await producer.send({
       topic: 'product.created',
-      value: product
+      value: product,
     })
     return res.status(200).json(product)
   })
