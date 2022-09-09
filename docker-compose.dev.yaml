@@ -5,6 +5,25 @@ services:
     environment:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
 
+  payment:
+    container_name: payment-api
+    image: payment
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: payment
+    restart: always
+    environment:
+      - KAFKA_ID=payment-api
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_RETRY_TIME=${KAFKA_RETRY_TIME}
+      - KAFKA_RETRY_TIMES=${KAFKA_RETRY_TIMES}
+    command: bash -c "npx tsx payment/server.ts"
+    depends_on:
+      - kafka
+    networks:
+      - app-net
+
   order:
     container_name: order-api
     image: order

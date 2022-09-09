@@ -3,6 +3,9 @@ WORKDIR /microservices
 COPY package.json tsconfig* ./
 RUN npm install
 
+FROM base as payment
+COPY payment ./payment
+
 FROM base as order
 COPY order ./order
 
