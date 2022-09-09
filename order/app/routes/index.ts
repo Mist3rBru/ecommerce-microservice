@@ -3,6 +3,7 @@ import { join } from 'path'
 import { v4 as uuid } from 'uuid'
 import { readFile, writeFile } from 'fs/promises'
 import { Order, User, Product } from '../../models'
+import { IProducer } from '@/order/kafka/protocols'
 
 export class Database {
   orderDatabase = join(__dirname, '../../orders.json')
@@ -44,7 +45,7 @@ export class Database {
   }
 }
 
-export default (router: Router) => {
+export default (router: Router, producer: IProducer) => {
   const db = new Database()
 
   router.post('/order', async (req, res) => {
@@ -57,6 +58,10 @@ export default (router: Router) => {
       })
     }
     const order = await db.registerOrder(body)
+    await producer.send({
+      topic: 'order.created',
+      value: order
+    })
     return res.status(200).json(order)
   })
 }
