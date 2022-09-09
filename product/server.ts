@@ -4,7 +4,7 @@ import { App } from './app'
 ;import { KafkaAdapter, ProducerAdapter } from './kafka';
 (async () => {
   const kafka = new KafkaAdapter({
-    clientId: process.env.KAFKA_ID || 'customer-api',
+    clientId: process.env.KAFKA_ID || 'product-api',
     brokers: [process.env.KAFKA_BROKER],
     retry: {
       initialRetryTime: parseInt(process.env.KAFKA_RETRY_TIME),
@@ -18,5 +18,4 @@ import { App } from './app'
   const port = process.env.APP_PORT || '3002'
   
   app.listen(port)
-
 })()

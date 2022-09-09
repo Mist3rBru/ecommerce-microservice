@@ -2,9 +2,11 @@ import axios from 'axios'
 import { faker } from '@faker-js/faker'
 import { User } from '@/gateway/app/models/user'
 import { Database } from '@/customer/app/routes'
+import { Database as OrderDatabase } from '@/order/app/routes'
 import { writeFile } from 'fs/promises'
 
 const db = new Database()
+const orderDb = new OrderDatabase()
 const api = axios.create({
   baseURL: 'http://localhost:3000',
 })
@@ -16,6 +18,7 @@ describe('customer-routes', () => {
 
   afterAll(async () => {
     await writeFile(db.dbPath, '[]')
+    await writeFile(orderDb.userDatabase, '[]')
   })
 
   describe('POST /user', () => {

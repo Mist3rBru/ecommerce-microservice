@@ -3,6 +3,7 @@
   "name": "microservices",
   "description": "",
   "scripts": {
+    "dev": "concurrently \"npm run gateway\" \"npm run customer\" \"npm run product\" \"npm run order\"",
     "docker": "docker-compose up",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yaml up",
     "test": "jest --runInBand --no-cache",
@@ -12,8 +13,7 @@
     "gateway": "tsx watch gateway/server.ts",
     "customer": "tsx watch customer/server.ts",
     "product": "tsx watch product/server.ts",
-    "order": "tsx watch order/server.ts",
-    "all": "concurrently \"npm run gateway\" \"npm run customer\" \"npm run product\" \"npm run order\""
+    "order": "tsx watch order/server.ts"
   },
   "dependencies": {
     "axios": "^0.27.2",
